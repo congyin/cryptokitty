@@ -6,22 +6,22 @@ contract kittyBreed is kittyOwner {
 
 
 
-    function _isReady(uint256 _tokenId) internal view returns(bool) {
+    function isReady(uint256 _tokenId) public view returns(bool) {
         Kitty storage _kitty = kitties[_tokenId];
-        return (_kitty.cooldown + cooldownTime < now);
+        return (uint64(_kitty.cooldown) < uint64(now));
     }
 
 
     //return the _tokenId message
     function getKitty(uint256 _tokenId) external view returns(
-        bool isReady,
-        uint256 genes,
+        bool Ready,
+        string genes,
         uint256 matronId,
         uint256 sireId,
         uint256 birthTime,
         uint256 generation) {
             Kitty memory _kitty = kitties[_tokenId];
-            isReady = _isReady(_tokenId);
+            Ready = isReady(_tokenId);
             genes = _kitty.genes;
             matronId = _kitty.matronId;
             sireId = _kitty.sireId;
@@ -30,7 +30,5 @@ contract kittyBreed is kittyOwner {
 
         }
 
-    function kittyBreed(address _owner) public {
-        owner = _owner;
-    }
+
 }

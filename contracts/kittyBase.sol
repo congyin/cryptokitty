@@ -3,14 +3,14 @@ pragma solidity ^0.4.19;
 import "./kittyControl.sol";
 contract kittyBase is kittyControl{
     /// @dev 小猫出生时的事件，包括giveBirth和0代猫的创建
-    event Birth(address owner, uint256 kittyId, uint256 matronId, uint256 sireId, uint256 genes);
+    event Birth(address owner, uint256 kittyId, uint256 matronId, uint256 sireId, string genes);
 
     /// @dev ERC721定义的转让事件，当kitty的主人变换时调用（包括出生）
     event Transfer(address from, address to, uint256 tokenId);
 
     //猫的数据结构
     struct Kitty{
-        uint256 genes; //基因
+        string genes; //基因
         uint64 cooldown; //可生育的冷却时间
         uint64 birthTime; //出生时间
         uint32 matronId; // 双亲ID
@@ -19,7 +19,7 @@ contract kittyBase is kittyControl{
     }
     //存储所有猫的数组
     Kitty[] public kitties;
-    uint cooldownTime = 20 minutes;
+    uint cooldownTime = 2 minutes;
 
     mapping(uint256 => address) public kittyToOwner;  //猫ID对应主人地址
     mapping(address => uint256) ownerTokenCount;   //主人对应猫的数
@@ -43,13 +43,13 @@ contract kittyBase is kittyControl{
 
 
     //创建猫的函数
-    function creatKitty(
+    function createKitty(
         address _to,
-        uint256 _genes,
+        string _genes,
         uint256 _matronId,
         uint256 _sireId,
         uint32 _generation
-    ) public returns(uint) {
+    ) public returns(uint256) {
         Kitty memory _kitty;
         uint256 _tokenId;
         if (_generation == 0) {
@@ -90,4 +90,17 @@ contract kittyBase is kittyControl{
         return _tokenId;
     }
 
+    //获取所有猫咪
+    function getKitties() public view returns(uint[]) {
+        uint[] memory _result = new uint[](kitties.length);
+        uint counter = 0;
+
+        for (uint i = 0; i < kitties.length; i++ ) {
+            _result[counter] = i;
+            counter++;
+        }
+        return _result;
+    }
+
 }
+
